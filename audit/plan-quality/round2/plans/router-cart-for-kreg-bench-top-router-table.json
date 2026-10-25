@@ -251,17 +251,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " length of your crank rod. Using the table saw, cut a 1/4\" x 1/4\" notch out of one corner of it (adjust as needed to snuggly hold your crank). Attach under the ledge of one of the side tops to create ",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "search": "flagged steps[5] 1/4\" notch is part of an optional crank-slot scrap (\"If you want to add a slot\"); all other cut/assembled parts match cutList[0..13] (step 0 glue-ups give the 1 1/2\" legs and supports)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all rows used: legs/supports/back steps[0],[3]; side parts [1]-[2],[5]; top [6]; drawer parts [8]-[10]"
     },
     "R4": {
       "result": "pass",
@@ -272,25 +267,98 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "chose to use a simple 1/2\" plywood box built with pneumatic nails. You can build your drawer boxes however you wish. For these simple to assemble boxes, attach the drawer box front/back boards to the ",
-          "why": "1/2\" nail — no material line lists a 1/2\" fastener"
+          "quote": "Secure with wood glue and 1\" long nails into the plywood bottom."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "attaching the drawer box side pieces to the sides of the box with wood glue and 1\" nails into the plywood sides and bottom of the box"
+        },
+        {
+          "path": "materials[4..5]",
+          "quote": "1 1/4\" finish nails; 1\" staples"
         }
-      ]
+      ],
+      "reason": "Steps 8 and 9 call for 1\" long nails, but materials list only 1 1/4\" finish nails and 1\" staples.",
+      "arithmetic": "Searched materials[].name for /nail|brad|staple/: \"1 1/4\\\" finish nails\" (size differs from the 1\" in steps 8-9) and \"1\\\" staples\" (a staple, not a nail); no 1\" nail. The flagged 1/2\" in steps[8] is plywood thickness."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Install the drawer boxes into the router cart with drawer slides that need 1/2\" clearance on either side."
+        }
+      ],
+      "reason": "Drawer slide positions inside the cart (height and setback for the 5\" and 10 1/2\" drawer boxes) are never given; steps 9 and 10 only say to install the boxes \"with drawer slides\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "both \"as shown\"-type references sit in steps with their own images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides, back/supports, other side, side tops, top, casters, drawer boxes, fronts"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] \"Set your pocket hole jig for 3/4\\\" thick material\"; steps[3] \"switch the pocket hole for 1 1/2\\\" thick material\""
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Attach casters to the bottom corners of the cart. Make sure to use locking casters"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Install the drawer boxes into the router cart with drawer slides that need 1/2\" clearance on either side."
+        },
+        {
+          "path": "cutList[10]",
+          "quote": "Top drawer box front/back qty 2, 0.5 x 5 x 27 (Kreg-corrected length 27.5)"
+        }
+      ],
+      "reason": "Step 7 uses casters, which are not in materials; separately, the drawer box width leaves no room for the 1/2\" slide clearance step 9 requires.",
+      "arithmetic": "(c) Searched materials[].name for /caster|wheel/ -> no match. (a, likely) opening width = Front/back support length 28.5 (cutList[4] corrected); box = front/back 27.5 + 2 x 0.5 side thickness (cutList[9] 0.5) = 28.5 (viewed step 8/9 images: bottom 27 1/2\" wide between sides, sides 19 1/2\" = 18 1/2\" bottom + 2 x 1/2\"); needed for slides = 28.5 - 2 x 0.5 = 27.5."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "ed55f205a1e06a17.png",
+      "ec2252fe73643dfe.png",
+      "d2ac86a3c723d7d7.png",
+      "851b23247b9968fa.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[9]",
+      "quote": "Large cup hooks",
+      "what": "Cup hooks (qty 5) and 1\" staples (qty 100) are listed but no step uses them (searched steps for /hook|staple/)",
+      "kind": "unused-material"
+    },
+    {
+      "path": "steps[12].body",
+      "quote": "You can apply a finish to the router table if you want.",
+      "what": "finish not in materials (optional)",
+      "kind": "consumable"
+    }
+  ]
 }

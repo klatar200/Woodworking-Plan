@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-3 (Long/Short Cross Braces, Long/Short Legs, pots) match cutList[0..5] and materials[4]; step 2 \"Long Legs/Short Legs\" = cutList \"Tall/Low Stand Leg\""
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all six rows used by steps[0]-[3] (low stand = 1 long + 2 short crosses, tall = 2 + 4)"
     },
     "R4": {
       "result": "pass",
@@ -193,39 +195,64 @@
       "arithmetic": "parts: 4×18 + 1×13 + 2×5.75 + 4×32 + 2×13 + 4×5.75 + kerf 13 cuts (17 parts − 4 boards, the fewest possible)×1/8 = 275.125″; bought: 2×72 + 2×96 = 336″; 275.125 ≤ 336"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step sizes: 2 1/2\" Kreg Pocket-Hole Screws only (steps[1],[3]) -- materials[2],[3]; no conflicting size"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "ur plant stand by connecting the brace assembly to the Legs. Before you do this, check the height of your pots. The ones we used were almost 11\" tall. If yours are taller or shorter, you may want to a",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de8687ac100ab244.webp"
-        }
-      ]
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Cut four Long Legs or four Short Legs to length—depending on which stand you are building—from 2x2 boards, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "For the high stand, position the brace assemblies on one Leg as shown. For the low stand, position the brace assembly at the lower position."
         },
         {
-          "path": "steps[2].body",
-          "quote": "Cut four Long Legs or four Short Legs to length—depending on which stand you are building—from 2x2 boards, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[3].body",
+          "quote": "The ones we used were almost 11\" tall. If yours are taller or shorter, you may want to adjust the position of the brace assembly."
         }
-      ]
+      ],
+      "reason": "The height of the brace assembly on the legs is never given: step 3 says \"as shown\" / \"lower position\", and the viewed step 3 image and the overview image show the braces with no dimension; only a relational hint (pot height ~11\") is given."
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "steps[2] \"as shown in the cutting diagram\": leg lengths 18 and 32 are in cutList[0],[3]; step 0 diagram image (viewed) gives 1 1/2\", 5 3/4\", 13\"; step 1 image gives 5 3/4\""
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cross braces cut, drilled, assembled (0-1); legs cut (2); brace assembly joined to one leg then the rest (3); finish last"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"set your Kreg Pocket-Hole Jig for 1 1/2\\\"-thick material\"; all joints are in 1 1/2\" 2x2 stock"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) tall = 2 long + 4 short crosses, low = 1 + 2, 4 legs each match cutList; geometry: short 5.75 + long cross 1.5 + 5.75 = 13 = Long Cross 13 -> 13\" opening for a 12\" pot; (b) all parts installed; (c) pots in materials[4]; (d) ends with finished stand"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "94cba4fc0d399685.png",
+      "ab01aee59e6ba187.png",
+      "de8687ac100ab244.png",
+      "91e549bcc0264ca6.png",
+      "56347dfb1cd27411.png",
+      "72375300618d0b9f.png",
+      "06cd3876abc29a00.png",
+      "2c5903ba76143422.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "We painted the upper \"ring\" on the pots, and painted the upper end of each Leg to match.",
+      "what": "paint and clear oil finish are not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

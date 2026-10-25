@@ -127,28 +127,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Repeat Step 3. Once you have attached the second \"divider\" to the second \"shelf\" you will then insert and attach the other end of the \"divider\" to the first \"shelf\". Again, always make sure you align,",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged \"have attached\" in steps[3] is an ordinary instruction, not a link or download; no external content needed"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-5 (73 1/2\" boards, 48\" boards, 13 1/2\" dividers, 33\" shelves) match cutList[0..3]; frame assembly shown in the step 0 image"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "\"Shelves\" (cutList[3]) are the \"33\\\" shelf\" boards of steps[1]-[5]; \"Sides\"/\"Ends\" are the frame in the step 0 image (73 1/2\" and 48\" boards)"
     },
     "R4": {
       "result": "fail",
@@ -180,46 +168,86 @@
       ],
       "arithmetic": "cutList[0] 1.5×11.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 11.5; stock = 1.5×11.25; cutList[1] 1.5×11.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 11.5; stock = 1.5×11.25; cutList[2] 1.5×11.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 11.5; stock = 1.5×11.25; cutList[3] 1.5×11.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 11.5; stock = 1.5×11.25",
       "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Sides — qty 2, 1.5 x 11.5 x 73.2 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Ends — qty 2, 1.5 x 11.5 x 48 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Dividers — qty 5, 1.5 x 11.5 x 13.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Shelves — qty 4, 1.5 x 11.5 x 33 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "readerNote": "Confirmed on Kreg-corrected rows: width 11.5 vs section 9 2x12 actual 11 1/4 (0.25 over). \"likely\" kept because real 2x12 width varies; the plan states no board width."
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 2×73.2 + 2×48 + 5×13.5 + 4×33 + kerf 8 cuts (13 parts − 5 boards, the fewest possible)×1/8 = 442.900″; bought: 5×96 = 480″; 442.900 ≤ 480"
+      "reason": "Names give length; steps name parts by length. 2x12 x5 = 480\": 2 x 73.5 + 2 x 48 + 5 x 13.5 + 4 x 33 = 147 + 96 + 67.5 + 132 = 442.5 + at most 8 cuts x 1/8 = 443.5 <= 480; boards pack as (73.5+13.5) x2, (48+33+13.5) x2, (33+33+13.5)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step size 2\" Kreg pocket screws matches materials[3] \"2\\\" Kreg Screws\"; no other fastener sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket holes \"(1) centered (2) 1\\\" from the edge\"; divider/shelf positions numeric in viewed images (13 1/2\" bays, 21 3/4\" compartments, 33\" shelves); last divider \"centered on the end board\""
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "steps vs /as shown|see diagram|drawing/ -> no step needs an unattached image; every step has its own image except steps[6]"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame (step 0 image) then shelves/dividers placed one at a time (steps 2-5) then plugs and finish"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "You will need (3) Kreg pocket holes in each end."
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the pocket holes in the 1 1/2\" boards (searched steps for /setting|thickness|jig/; step 0, 1, 2 and 5 images viewed show hole layouts only). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Sides qty 2, 1 x 11 x 73 (Kreg-corrected 1.5 x 11.5 x 73.2, source \"73 1/5\\\"\")"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Dividers qty 5, Kreg-corrected length 13.5; Shelves thickness 1.5 (cutList[3])"
+        }
+      ],
+      "reason": "Steps and the step 0 image (viewed) give the long frame boards as 73 1/2\"; Kreg's cut-list row is 73 1/5\" (73.2), which does not agree with the 5 dividers and 4 shelf boards that stack to 73 1/2\".",
+      "arithmetic": "5 dividers x 13.5 + 4 shelf boards x 1.5 thick = 67.5 + 6 = 73.5 (equals the step text 73 1/2\", and the step 2 image 13 1/2\" bays), vs cutList[0] corrected 73.2: 0.3\" short. Cause plan: the Kreg source text itself reads \"73 1/5\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "e501e547536c3f68.png",
+      "93ddd8d54fc3f61f.png",
+      "281134fe15995d10.png",
+      "e28100fb250abafe.png",
+      "32d3cc1f0a49f3f2.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "By using the wood plugs you will be able to easily conceal any pocket holes.",
+      "what": "wood plugs and wood glue/filler not in materials (cosmetic step; plugs recorded as gap, glue/filler as consumable)",
+      "kind": "consumable"
+    }
+  ]
 }

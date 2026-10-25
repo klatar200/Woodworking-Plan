@@ -59,100 +59,119 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "d on the cutting diagram, measure to the center and then up 1-3/4\" and place a mark. Then measure half the distance of the straight edge shown (side trim: 2-3/4\"; front trim: ), place a mark for each.",
-          "why": "cut sentence states 1-3/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "ure half the distance of the straight edge shown (side trim: 2-3/4\"; front trim: ), place a mark for each. Draw a straight line between the two marks to create the straight line 5-1/2\" in length. Meas",
-          "why": "cut sentence states 2-3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
-    },
-    "R3": {
-      "result": "to-read"
-    },
-    "R4": {
       "result": "fail",
-      "level": "Fix",
+      "level": "Unpublish",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[6]",
-          "quote": "Front Bottom Trim — qty 1, 1 x 5 x 50"
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes on the top side of the top piece as well as the bottom side of the bottom piece bottom."
         },
         {
-          "path": "cutList[7]",
-          "quote": "Side Bottom Trim — qty 2, 1 x 5 x 15"
+          "path": "steps[3].body",
+          "quote": "Drill 3 pocket holes on both the top and bottom of the dividers."
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x3 96\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Plywood, 3/4\" Thick Full Sheet"
+          "path": "cutList[4]",
+          "quote": "Cubby Top qty 1, 0.75 x 15 x 47"
         }
       ],
-      "arithmetic": "cutList[6] 1×5: no listed stock has thickness 1 (±1/32) with width ≥ 5; stock = 0.75×5.5, 0.75×2.5, sheet 0.75; cutList[7] 1×5: no listed stock has thickness 1 (±1/32) with width ≥ 5; stock = 0.75×5.5, 0.75×2.5, sheet 0.75",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[6]",
-          "quote": "Front Bottom Trim — qty 1, 1 x 5 x 50",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[7]",
-          "quote": "Side Bottom Trim — qty 2, 1 x 5 x 15",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "reason": "Steps and the step 2/3 images (viewed) use a cubby top AND a cubby bottom panel (bottom raised 4 1/64\"), but the cut list has only one panel (\"Cubby Top\", qty 1) and no row gives a bottom panel size; the bottom is structural (dividers attach to it). Likely a qty-1 omission in Kreg's list.",
+      "arithmetic": "Search cutList[].part for /bottom|base|cubby/: matches are \"Cubby Divider\", \"Cubby Top\", \"Front Bottom Trim\", \"Side Bottom Trim\" -- none is a bottom panel. Geometry check supports a 3/4\" bottom panel: sides 18.5 - top 0.75 - bottom 0.75 - 4 1/64 offset = 12.98 ~ divider width 13 (cutList[3] 0.75 x 13 x 15)."
+    },
+    "R3": {
+      "result": "pass",
+      "reason": "every row used: seat trim steps[4]/[10]; sides steps[1]-[2]; dividers [3]; cubby top [2]; seat [4]-[5]; bottom trims [6]-[7]"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[6..7] \"1 x 5\" has no matching listed stock under strict reading (only 1x6 = 3/4 x 5 1/2 is wide enough; total 50 + 2x15 = 80\" fits one 96\" 1x6), but cutList[0..1] \"1 x 3\" is equally nominal-labelled (1x3 stock is 2 1/2\" wide) and the sweep passed it; the plan never says which board the bottom trim comes from, so nominal-vs-actual cannot be settled from the plan"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (1x6, 1x3, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "d a small amount of wood glue to the ends of the top and bottom pieces where they meet against the sides prior to attaching with Kreg 1 1/4\" pocket hole screws. Attach the top and bottom to the sides.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "ges that will attach to the top and bottom. Insert each divider 15 1/4\" in from the sides. Attach each divider with Kreg 1-1/4\" pocket screws. (Make sure each divider is square to the top and bottom).",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Attach seat trim pieces using wood glue on back and sides edges of seat that come in contact with the trim. Using 1-1/4\" Kreg screws to attach from bottom side of seat.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1 1/4\" \"Kreg pocket hole screws\" are matched by materials[3] \"#8 x 1.25-in ... Self-Tapping Square-Drive Interior Screws\" (1 1/4\" = 1.25-in); no step gives a conflicting size; steps[5],[7] \"screws\" give no size (nothing to compare)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Step 6 blank \"front trim: )\" is settled by the viewed step 6 image (40\" straight edge, 3\" ends, 1 3/4\" rise, 5\" tall); bottom panel height 4 1/64\" and divider spacing 15 1/4\" are in the viewed step 2/3 images; seat trim cut 1 1/4\" / 11\" given in step 10"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels + sides -> dividers -> seat trim -> seat to base -> base trim; step 10 side-trim angle is cut after trim is on (awkward but possible, see gaps)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes on the top side of the top piece as well as the bottom side of the bottom piece bottom."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill 3 pocket holes on both the top and bottom of the dividers."
+        }
+      ],
+      "reason": "No jig thickness setting is stated in any step text (searched /setting|thickness|jig|3\\/4\" (setting|material)/); steps[2] and [3] drill pocket holes in 3/4\" ply. Images viewed (steps 1,2,3,6) show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) trim counts 1 front + 2 side, dividers 2, sides 2 match cut list; trim widths: front 50 = seat 48.5 + 2 x 3/4 side trim; (b) parts installed (bottom-panel omission recorded under R2); (c) no non-consumable item missing; (d) ends with finished bench"
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "4d39a22d0184cfde.png",
+      "34dc03116ea89b4e.png",
+      "e55599f5f172bd98.png",
+      "23c2d0058744122a.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Insert each divider 15 1/4\" in from the sides.",
+      "what": "Step 3 image labels three bays of 15 1/4\"; 3 x 15 1/4 + 2 x 3/4 (divider thickness, cutList[3]) = 47 1/4\" vs the 47\" opening (cutList[4] Cubby Top 47); the text only dimensions the outer gaps, leaving the middle bay 15\" -- 1/4\" inconsistency in the image labels",
+      "kind": "measurement"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "On the side seat trim pieces, measure 1 1/4\" from the bottom up on the front.",
+      "what": "Angle cut on the side seat trim is described after the trim is already attached (step 4), seat attached (step 5) and finished (step 8); the build order makes the cut awkward",
+      "kind": "sense"
+    },
+    {
+      "path": "description",
+      "quote": "Seat pad and baskets enhance the experience and use of this bench.",
+      "what": "Title says \"Padded\"; no step makes or attaches a seat pad and materials list no foam/fabric/baskets; searched steps and materials for /pad|cushion|foam|fabric|basket/ (only the description matches)",
+      "kind": "sense"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Attach the front trim piece by placing a bead of glue along front edge of cubby base and side front edge. Secure using pocket hole screws.",
+      "what": "No step says to drill pocket holes for the front trim, nor where",
+      "kind": "sense"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Add a small amount of wood glue to the ends of the top and bottom pieces",
+      "what": "wood glue listed (materials[4]); sandpaper not listed",
+      "kind": "consumable"
+    }
+  ]
 }

@@ -175,62 +175,90 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": " for the Patchwork Plank Dining Table previously posted. This is a quick and easy build with the help of a few Kreg Jig pocket holes! You can find plans for the table build here: http://bit.ly/2ebZtfM",
-          "why": "matches \"http://\""
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Pull out your favorite Kreg Jig and follow the attached layout, it should help with the structure and no misplaced holes that butt up against each other ineffectively. The good news is that you're onl",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "description http link is a pointer to the companion table plan (credit); the \"attached layout\" in steps[2] is the step image (viewed: 72\" x 11\" pocket-hole layout), so nothing needed to build the bench is missing"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-6 (1x6 planks, 2x4 end/side aprons, 2x6 end supports, 2x4 middle supports, hairpin legs) all in cutList[0..6] or materials[3]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all rows used: planks steps[0]/[2], aprons steps[3]/[4], supports steps[5]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 2x4, 2x6); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "ntioned in the table build, it's very important to make sure the face down side is flush so you're going to have to use a healthy dose of clamps (you can never have too many!) to have a smooth reveal.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e1f7a8290952a42e.webp"
+          "path": "materials[1].name",
+          "quote": "Board, 2x4 72\""
         },
         {
-          "path": "steps[5].body",
-          "quote": "drill 1.50\" pocket holes on the ends of all 6 boards. Glue the bottoms and sides and attach with 2-1/2\" pocket screws. The 2x4's need to be spaced covering the joints of the planks for added strength.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8db88efc7839a2e1.webp"
+          "path": "cutList[3]",
+          "quote": "Side Apron qty 2, 2 x 4 x 75"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cut your two 2x4's to length that will be the side aprons."
         }
-      ]
+      ],
+      "reason": "Side aprons are 75\" but the only 2x4 bought is 72\" boards; the 2x4 total also has no room for kerf. (1x6 is kerf-only: parts 144\" vs 144\" bought.)",
+      "arithmetic": "2x4: bought 3 x 72\" = 216\". Parts: 2 x 75 + 2 x 11 + 4 x 11 = 150 + 22 + 44 = 216\", plus at least 5 cuts x 1/8\" = 0.625\" -> 216.625 > 216; and each 75\" side apron is longer than any single 72\" board (75 > 72). 1x6 (kerfOnly): 3 x 24 + 2 x 18 + 36 = 144\" + 4 cuts x 1/8\" = 144.5 vs 2 x 72 = 144\" (short 0.5\")."
+    },
+    "R6": {
+      "result": "pass",
+      "search": "sizes in steps: 1-1/4\" pocket screws, 2-1/2\" pocket screws -- both in materials[4],[5]; no conflicting sizes (steps[3] 1.50\" pocket holes for 2-1/2\" screws)"
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Pocket-hole layout is in the viewed step 2 image; support positions shown in the viewed step 5 image (2x4s straddle plank joints, 2x6s against end aprons); hairpin legs mount on the 2x6 supports (viewed step 6 image)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "both references (\"attached layout\", \"as you can see\") have their own viewed step images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "planks -> top -> end aprons -> side aprons -> supports -> legs"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"0.75\\\" depth for the 1-1/4\\\" pocket screws\" and image \"Use 0.75\\\" pocket holes for 1-1/4\\\" screws\"; steps[3]/[5] \"1.50\\\" pocket holes\" for 2x stock"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 6 planks = 3 + 2 + 1 (row 1: 24 x 3; row 2: 18 + 36 + 18); top width 2 x 5.5 = 11 = End Apron 11; length 72 + 2 x 1.5 = 75 = Side Apron 75; 2x6 x2 + 2x4 x4 supports match; (b) all parts installed; (c) hairpin legs in materials[3]; (d) ends at finished bench"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "e1f7a8290952a42e.png",
+      "8db88efc7839a2e1.png",
+      "10241323c7a4790a.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "DO NOT ATTACH the legs directly to your plank top.",
+      "what": "Screws for mounting the hairpin legs are not given or listed in materials (materials[3] lists only the legs)",
+      "kind": "hardware"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Stain your planks and your 2x4 side and end aprons.",
+      "what": "stain, polyurethane and sandpaper not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

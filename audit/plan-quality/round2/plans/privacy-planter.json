@@ -55,64 +55,83 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "g 2-1/2\" pocket screws. Drill extra pocket holes at the top for 1-1/2\" long pocket screws. These will be used to attach the cap.\nNote: You can download a printable PDF of the plans in the \"extras\" tab",
-          "why": "matches \"download\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "g 2-1/2\" pocket screws. Drill extra pocket holes at the top for 1-1/2\" long pocket screws. These will be used to attach the cap.\nNote: You can download a printable PDF of the plans in the \"extras\" tab",
-          "why": "matches \"printable\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "g 2-1/2\" pocket screws. Drill extra pocket holes at the top for 1-1/2\" long pocket screws. These will be used to attach the cap.\nNote: You can download a printable PDF of the plans in the \"extras\" tab",
-          "why": "matches \"PDF\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[0] note offers a printable PDF in the \"extras\" tab, but the step images (viewed) carry every dimension, jig setting and placement; the PDF is a convenience, not needed to build"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps/images: posts + side boards (step 0 image), front/back boards (step 1 image), 2x4 supports, base boards, cap and cap sides (step 4 image) all match cutList[0..6]"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Front/Back",
-          "why": "no step mentions it (searched steps for front/back)"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Posts",
-          "why": "no step mentions it (searched steps for post)"
-        }
-      ]
+      "result": "pass",
+      "reason": "\"Posts\" appear in the step 0 image (\"4 x 4 x 40-1/4\"\", two per side) and \"Front/Back\" in the step 1 image (\"5/4 x 6 x 46-1/2\" (14 places)\"); the step text omits them but the images use them"
     },
     "R4": {
       "result": "unknown",
       "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1]); +1 more"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
+      "result": "pass",
+      "reason": "Names give lengths. Deck boards 5/4x6: 14 x 46.5 = 7 boards at 2 per 96\" (93.125 <= 96); cap 2 x 57 + 1/8 = 114.125 <= 120; 14 x 11.5 + 8 x 14 + 2 x 22 = 317 packed in the other 4 x 96\" boards (92.875, 91.75, 92.625, 42) -> 7 + 4 = 11 = materials[1]. 4x4: 2 per 96\" board = 80.5 + 1/8 <= 96 (2 boards). 2x4: 2 x 46.5 = 93 + 1/8 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Flagged text: sizes in steps (2-1/2\", 1-1/2\" blue-kote pocket screws, 1-5/8\" and 2\" exterior screws) are all in materials[4..7]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Posts 1/4\" from bottom and flush at top, 1/4\" board spacing, 1\" inset, supports flush with bottom of 3rd board, base spacing 3/4\" are in the viewed images; cap overhang is relational"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "side assemblies -> box -> supports -> base -> cap frame -> cap on box"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "step 0 and 1 images (viewed) state \"1\\\" thickness & 2-1/2\\\" pocket screws\" and \"1\\\" thickness & 1-1/2\\\" pocket screws\""
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Staple plastic to the sides, then overlap weed barrier and staple it to the bottom to retain the soil but allow for drainage."
+        },
+        {
+          "path": "materials[0..7]",
+          "quote": "1-5/8\" Exterior Wood Screws"
+        }
+      ],
+      "reason": "Step 3 uses staples, plastic sheeting and weed barrier, none of which is in materials.",
+      "arithmetic": "Searched materials[].name for /staple|plastic|weed|barrier|fabric|liner/ -> no match (materials are boards, pocket screws, exterior screws only)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "1cf91bc041ce1550.png",
+      "f7634039e5bf7c8e.png",
+      "1574049c97fc2b50.png",
+      "c020d7de34c135ad.png",
+      "1cdec30cb22d14e7.png",
+      "1d4f2d2882303ba8.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0]",
+      "quote": "Cap qty 2, 1.25 x 6 x 57; Cap Sides qty 2, 1.25 x 6 x 22",
+      "what": "Cap frame is mitered (step 4 image); cut-list lengths are the long-point lengths, which is not stated in the text",
+      "kind": "sense"
+    }
+  ]
 }

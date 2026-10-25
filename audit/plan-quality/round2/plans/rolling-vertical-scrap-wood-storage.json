@@ -119,46 +119,100 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-5 (casters, plywood edge, cubby back and sides, vertical and horizontal posts, racks) all match cutList[0..6] and materials[2]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all rows used by steps[1]-[4]; the 10-degree rack end is the \"angled end\" in steps[4]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[4] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Kreg-corrected rows fit: posts/horizontal/racks 1.5 x 3.5 = 2x4 (materials[1]); Base, Edge, Cubby parts 0.75 = 3/4\" sheet (materials[0]); sheet parts fit 48 x 96 (24 + 3 + 9.5 = 36.5\" wide strips of 72\", 4 sides 9.5 x 11.25 in the remaining strip)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "2x4 (7 x 96 = 672\"): 5 x 60 + 72 + 20 x 12 = 612\" + at most 19 cuts x 1/8 = 614.4 <= 672. Board packing also works with zero kerf (60 + 3 racks = 96; 72 + 2 racks = 96; 8 racks = 96). Ply area: 24 x 72 + 3 x 72 + 9.5 x 72 + 4 x 9.5 x 11.25 = 3055.5 sq in <= 4608."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "\nUsing wood glue and pocket screws, attach the five Vertical Posts to the Base flush along the back of the Cubby Back.\nInsert a 2\" screw through Cubby Back into each Vertical Post for added stability.",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Insert a 2\" screw through Cubby Back into each Vertical Post for added stability."
+        },
+        {
+          "path": "materials[3..4]",
+          "quote": "Box of 2 1/2\" Kreg pocket hole screws (see tools list)"
         }
-      ]
+      ],
+      "reason": "Step 3 uses a 2\" screw that is not in materials, which lists only 1 1/4\" and 2 1/2\" pocket-hole screws.",
+      "arithmetic": "Searched materials[].name for /2\"|2 in|wood screw/ -> only \"2 1/2\" Kreg pocket hole screws\"; no 2\" fastener."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "oles on one 9 1/2\" and one 11 1/4\" side of each Cubby Side.\nUsing wood glue and pocket screws, attach two of the Cubby Sides on the far edges of the Base and the other two Cubby Sides spaced out depen",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c9a464da1279be4.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Cubby Back \"11 1/4\" from the edge\"; cubby sides at far edges + others \"spaced out depending on your needs\"; posts at ends, middle and evenly between; posts flush behind Cubby Back; racks spaced using a rack as the spacer; casters at base corners shown in viewed step 1 image; flagged steps[2] cubby-side spacing is \"as needed\""
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "casters, plywood edge, cubby back/sides, post frame to base, racks last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill five pocket holes along one long side of the Plywood Edge."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Drill five pocket holes along one long side of the Cubby Back."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "On each of the Vertical Posts, drill two 3/4\" pocket holes on one end and two 1 1/2\" pocket holes on the other end."
+        }
+      ],
+      "reason": "No jig setting is stated for the 3/4\" plywood pocket holes in steps 1-2 (first mention is step 3), and step 3 calls for \"3/4\\\" pocket holes\" on 1 1/2\" posts. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 5 posts x 4 racks = 20 (viewed step 5 image shows 4 per post); step text cubby side 9 1/2\" x 11 1/4\" matches cutList[6] corrected; (b) all parts installed; (c) casters in materials[2], glue in [5]; (d) ends with loaded storage"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "7c9a464da1279be4.png",
+      "b462c28f5717bf6e.png",
+      "35dba7e2151e6e74.png",
+      "90a38197457222ba.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Attach casters to the underside of the Base.",
+      "what": "caster mounting screws/bolts not specified or listed (materials[2] lists only the casters)",
+      "kind": "hardware"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Drill two pocket holes on the angled end of each of the 20 Racks.",
+      "what": "No step says to cut the 10-degree end on the racks or which way it faces; the cut list row is the only mention",
+      "kind": "sense"
+    }
+  ]
 }

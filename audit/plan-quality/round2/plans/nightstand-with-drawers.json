@@ -25,38 +25,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/diy-nightstand-with-drawers/\nFor a full video of the build - https://youtu.be/LO3aQBazBiU",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/diy-nightstand-with-drawers/\nFor a full video of the build - https://youtu.be/LO3aQBazBiU",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[7] link is a credit/video pointer; steps 0-6 complete the build without it"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every step noun (panels, legs, angled apron, straight aprons, drawers, 1x6/1x8) matched to cutList rows"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Top and bottom planks",
-          "why": "no step mentions it (searched steps for plank)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Side planks",
-          "why": "no step mentions it (searched steps for plank)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Planks are the 1x5 boards joined into panels in steps[0] (\"joining three 1x5 boards each\"; 6x16 + 6x14.875 = 2+2 panels of 3)"
     },
     "R4": {
       "result": "unknown",
@@ -67,17 +45,72 @@
       "reason": "R5 precondition not met: unparseable stock materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "screw sizes in steps: 1-1/4\" pocket hole, 2-1/2\" pocket hole, 1-1/4\" wood screws -- all in materials[5..7]; no conflicting size"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "install drawer slides inside the nightstand frame."
+        }
+      ],
+      "reason": "Drawer slide positions inside the frame (height/setback) are never given for the two stacked drawers; the step 6 image (viewed) shows only a finished drawer box, no slides."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels -> box; leg frames -> legs attached to box; drawers and slides last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "joining three 1x5 boards each using 1-1/4\"pocket hole screws and wood glue"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the angled apron between two legs using 2-1/2\" pocket holes screws and wood glue."
+        }
+      ],
+      "reason": "No jig thickness setting stated in any step text for 3/4\" planks or 1-1/2\" 2x2 pocket joints (text only searched: /setting|thickness|jig/; step images not opened). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) planks 3x per 16\" / 14 7/8\" panel match cut rows; legs 4, aprons 2+2, drawer faces 2, sides 8 match; (b) all built parts installed; (d) ends with drawers and hardware"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "607bc0036643eca3.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Attach the 1x8 drawer frames and your choice of hardware.",
+      "what": "Drawer pulls/hardware used but not in materials; plan leaves choice open, so recorded as gap not R14 fail",
+      "kind": "hardware-choice"
+    },
+    {
+      "path": "cutList[5..8]",
+      "quote": "Drawer side 1 / Drawer side 2 / Drawer bottom 13 x 13.5",
+      "what": "Viewed step 6 image labels the drawer box 13\" wide with 12\" sides; cut list gives two sets of 12\" sides (butt joints would give 13.5\") and a 13 x 13.5 bottom; the plan never says how sides and bottom join, so dimensions cannot be reconciled",
+      "kind": "measurement"
+    }
+  ]
 }

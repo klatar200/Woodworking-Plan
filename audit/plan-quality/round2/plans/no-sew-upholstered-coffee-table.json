@@ -47,17 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps nouns: 1x3s (steps[0..1]), table legs (materials[2]), plywood top (cutList[1]), foam topper (materials[12]) -- all in cut list or materials"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "1x3\"",
-          "why": "no step mentions it (searched steps for its words)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[0] \"1x3\\\"\" is the apron stock: steps[0] \"pocket holes in each end of your 1x3\\\"s\" attach to legs in steps[1]"
     },
     "R4": {
       "result": "pass",
@@ -68,25 +63,77 @@
       "reason": "R5 precondition not met: 3 stock types (1x3, sheet-0.75, 14x15.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "sizes in steps: 3/4\" setting, 1 1/2\" pocket hole screws, 1\" pocket hole screws, washer + screw (materials[5],[6]) -- all in materials; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "ure you have enough to staple on the underside of the table. Start pulling the fabric unto the button hole but make sure to pull from the coffee table side and not from the edge side. Screw your washe",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d1ae2597c6725d99.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Apron offset given as \"a 1/2\\\" from the outside of the leg\"; button rows/spacing given in steps[4] (6.5-7\"); step 1 image (viewed) shows apron flush at leg top; flagged steps[5] text is pull direction, not a position"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "base built (steps 0-1), top attached (2), foam then fabric then buttons; finishing last"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states \"Kreg Jig at the 3/4\\\" setting\"; all pocket holes are in 3/4\" 1x3 stock"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Add your batten over the foam followed by your fabric."
+        },
+        {
+          "path": "materials[0..12]",
+          "quote": "9 sq. ft. of 2\" foam"
+        }
+      ],
+      "reason": "steps[5] uses batting (written \"batten\") that is not in materials; glue/finish consumables recorded in gaps",
+      "arithmetic": "search materials[].name for /batt|batten|batting|padding/ -> no match"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "0044377651b7e970.png",
+      "d1ae2597c6725d99.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[1]",
+      "quote": "Plywood Top 0.75 x 3 x 3 (qty 1)",
+      "what": "The top is a 3\" x 3\" square on the cut list, which cannot be the top of a table whose 1x3 aprons are 31 1/4\"; searched all steps, description and materials for a top size: none is given, so the top dimensions are not recoverable from the plan",
+      "kind": "measurement"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Make two pocket holes in each end of your 1x3\"s",
+      "what": "4 aprons x 2 ends x 2 holes = 16 pocket-hole screws at the leg joints, materials[9] lists 8 x 1 1/2\" screws (quantity may be an import figure)",
+      "kind": "quantity"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "use spray adhesive to adhere the foam to the plywood",
+      "what": "spray adhesive not in materials (only E6000 and fabric adhesive)",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "stain or paint to finish",
+      "what": "finish not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

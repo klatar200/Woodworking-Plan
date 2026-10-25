@@ -215,22 +215,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 1-10 (five top pieces, frames, legs, supports, three long + two short shelf pieces, casters) match cutList[0..6] and materials[2]"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "\"Shelves\" rows 1-2 are the bottom shelf: steps[6] \"the last three long shelf pieces\" (3 x 32) and steps[8],[9] \"small shelf piece\" (2 x 29)"
     },
     "R4": {
       "result": "pass",
@@ -241,26 +231,54 @@
       "arithmetic": "parts: 5×32 + 3×32 + 2×29 + 4×29 + 4×10.5 + 4×19.75 + 4×14.5 + kerf 19 cuts (26 parts − 7 boards, the fewest possible)×1/8 = 611.375″; bought: 7×96 = 672″; 611.375 ≤ 672"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step sizes: 2 1/2\" pocket hole screws only -- materials[1]; no conflicting size"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "Attach the longer shelf pieces in between the two legs by screwing them in from the pocket holes in the support beams and frames below. Make sure the pocket holes you used to attach the shelf are on t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/956497697362d5f9.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Bottom frame \"2\\\" from the floor\" (step 3 text and image), 14 1/2\" support length, overall 32\" x 17 1/2\" x 21 1/4\" (step 0 image); support placement along the frames is shown in the viewed step 4 image without dimensions (see gaps); flagged steps[7] placement is shelf-between-legs fixed by the parts (3 x 3.5 = 10.5 = Short Frame Piece)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top shelf, frames, supports, top attached, then bottom shelf long pieces then short pieces, casters last"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "step 4 image (viewed) labels \"Kreg Pocket Hole 1 1/2\\\"\" for the 2x4 frames and supports; all pocket-holed parts are 1 1/2\" 2x4 stock"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) five 32\" top pieces and 3 + 2 shelf pieces match cutList; geometry: legs 1.5 + Large Frame 29 + 1.5 = 32 = top length; legs 3.5 + Short Frame 10.5 + 3.5 = 17.5 = 5 x 3.5 top depth; 19.75 + 1.5 = 21.25 = image height; (b) all parts installed; (c) casters in materials[2]; (d) ends with finished stand"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "348bf00c293af6e0.png",
+      "5631e420a0e48664.png",
+      "6411196f0820b14d.png",
+      "956497697362d5f9.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Attach the supports to the frames with 2 1/2\" pocket hole screws and glue.",
+      "what": "Support positions along the 29\" frames are not dimensioned (viewed step 4 image shows two per frame, roughly even)",
+      "kind": "measurement"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Finish off your bench by attaching the casters",
+      "what": "caster size/type and mounting screws not specified (materials[2] \"Rolling Casters\"); wood glue (steps[1]) not in materials",
+      "kind": "hardware"
+    }
+  ]
 }

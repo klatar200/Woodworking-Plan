@@ -119,55 +119,67 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps 0-10 (top, sides, bottom, divider, 6\" legs, 45\" long supports, 8\" short supports, shelves, backer) vs cutList[0..7]; backer is optional (steps[8]) and is cut from materials[2]"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Long Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        },
-        {
-          "path": "cutList[6].part",
-          "quote": "Short Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[5],[6] are the 2x2 base pieces: steps[5] \"two 45\\\" long supports and two 8\\\" short supports\""
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x2, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's stock is named by the steps (3/4\" ply steps[0..1], steps[0] 10\" strip for shelves; 2x2 base steps[5]). 2x2: 4x6 + 2x45 + 2x8 = 130 + 7 cuts x 1/8 = 130.875 <= 2 x 96 = 192. Ply strips (96\" long): 48 + 46.5 + 1/8 = 94.625 <= 96; 32 + 32 + 31.25 + 2/8 = 95.5 <= 96; shelves 4 x 22.625 + 3/8 = 90.875 <= 96."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "This step is also optional. If desired, cut a 1/4\" backer like shown and staple or glue and nail onto the back side of the bookshelf.",
-          "why": "1/4\" staple — no material line lists a 1/4\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "This step is also optional. If desired, cut a 1/4\" backer like shown and staple or glue and nail onto the back side of the bookshelf.",
-          "why": "4\" nail — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged staple/nail text is in steps[8], which the plan marks optional (\"This step is also optional\"); recorded in gaps. All other sizes (1 1/4\" and 2 1/2\" pocket screws, 1 1/4\" and 2\" wood screws) are in materials[3,4,7,8]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Divider/base placements are relational; shelf pin holes use a jig (step 9 image viewed shows the jig on the side panel, no offsets given but jig fixes them); shelf cut size given as 1/4\" shorter than the opening"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "strips -> panels -> pocket holes -> body; base built then attached; shelf pin holes and shelves last"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"Drill 3/4\\\" pocket holes\" for 3/4\" ply; steps[5] \"one 1 1/2\\\" pocket hole\" for 2x2 (1 1/2\" thick); settings match thickness"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step 0 strips 11/11/10 and step 1 pieces 48, 32, 46 1/2, 31 1/4 match cutList rows (corrected 46.5, 31.25); step 5 4x6\", 2x45\", 2x8\" match; geometry: bottom 46.5 + 2 x 0.75 = 48 = top; divider 31.25 = side 32 - 0.75; (b) all parts installed; (c) staples/nails only in optional step; (d) reaches finished shelf"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-10",
+    "imagesViewed": [
+      "5d57d69d460e09b6.png",
+      "97dc1b8d62dde478.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "If desired, cut a 1/4\" backer like shown and staple or glue and nail onto the back side",
+      "what": "staples/nails for the optional backer are not in materials (optional step, so not an R14 fail)",
+      "kind": "optional-hardware"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Apply wood glue to top of base and attach onto bottom of bookshelf with 2\" wood screws.",
+      "what": "wood glue not in materials",
+      "kind": "consumable"
+    }
+  ]
 }
