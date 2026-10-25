@@ -6,42 +6,108 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Get the full tutorial at www.CharlestonCrafted.com."
+        },
         {
           "path": "steps[5].body",
-          "quote": "Get the full tutorial at https://www.charlestoncrafted.com/how-to-build-a-platform-bed-for-50/",
-          "why": "matches \"https://\""
+          "quote": "Get the full tutorial at https://www.charlestoncrafted.com/how-to-build-a-platform-bed-for-50/"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Attach sides to the front and back, then add inner supports along front, back and sides."
         }
-      ]
+      ],
+      "reason": "The plan is a four-line outline (steps[0]-[3]) that hands off to an external 'full tutorial'. The outline gives no joint orientation, support heights, leg locations or centre-beam locations (see R10), and the only fuller instructions are on the external page. Searched all steps, summary and description for positions or dimensions beyond the cut list: none. Build is likely not completable from the plan alone; the three viewed photos show the finished bed only, no dimensions. Likely rather than certain because the cut list fixes most part sizes."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named by steps (sides, front/back, inner supports, legs, leg supports, two centre support beams, slats) all exist in cutList; front/back 'inner supports' correspond to cutList[3] 'Front and Back Leg Supports'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used by steps[1]-[3]: Inner Side Supports and Leg Supports (steps[1]), Legs (steps[2]), Long Center Supports and Slats (steps[3])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x6, 2x4, 2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "Each part thickness x width matches exactly one listed board: 1.5x5.5=2x6, 1.5x1.5=2x2, 1.5x3.5=2x4, 0.75x3.5=1x4. 2x6: 2x56 + 2x74 = 260 <= 4x96 = 384 (each part from its own board). 2x4: 2x53 + 2x67 + 4x9 = 276 + kerf 4x1/8 = 276.5 <= 4x72 = 288 (first-fit: 67 | 67 | 53+9+9 | 53+9+9). 2x2: 2x67 = 134 <= 2x72 = 144. 1x4: 7x53 = 371 <= 7x72 = 504. No quantity is 1."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No step gives a fastener size (searched steps for /screw|nail|\"/: none); materials list 2 1/2\" Kreg pocket screws and 2\" screws without conflict."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Add two center support beams and then lay slats down evenly across the supports."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the legs to the leg supports."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "then add inner supports along front, back and sides."
+        }
+      ],
+      "reason": "No location is given for the two centre beams, for where on the leg supports each leg goes, or for the height of the inner supports relative to the box (slats rest on them). Searched steps[0]-[3] for any inch or fraction value: none (cut-list values only). Viewed photos show the finished bed but no dimensions. Slat spacing is 'evenly' (relational, passes)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands: no step refers to a drawing or diagram"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order cut, frame, legs, centre beams and slats is possible; no step needs access closed off earlier."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Add pocket holes to sides, supports and legs."
+        }
+      ],
+      "reason": "Pocket holes on 1-1/2\" thick parts (cutList thicknessIn 1.5 for sides, supports, legs); searched all steps and materials for /jig|setting|thickness/i: no setting stated; viewed images are photos with no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Steps make and install every cutList part (box, inner supports, legs, two centre beams, slats) and end with the slatted bed; two beams and 7 slats match cutList quantities. Slat length 53 = front/back 56 - 2 x 1.5 consistent."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "images / cutList[6]",
+      "quote": "Legs 1.5 3.5 9",
+      "what": "Viewed photos show tapered legs; cut list and steps give no taper instruction. Cosmetic, noted only."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1aea61e4b84f5c49.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/90fd25911bae5e79.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6f5e49aa954f8d0a.webp"
+    ]
+  }
 }

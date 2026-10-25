@@ -7,13 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts made by steps all have cutList rows: box top/bottom/sides (steps 0-1), mitered front frame (steps 3-4: 'Mitered front legs top & bottom/sides'), back frame (steps 5-6), 'side pieces for the base' (steps[7] = 'Cross pieces for legs' x4, 14\" = 16\" depth - 2x1\"), drawer pieces, drawer fronts, back panel."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: Cross pieces for legs = the 'side pieces for the base' of steps[7] (4 x 14\" between 16\"-deep front and back frames); drawer bottom/front/back/sides in steps[9]-[12]; Nightstand back in steps[13]."
     },
     "R4": {
       "result": "pass",
@@ -21,42 +23,93 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x1, sheet-0.25, 0.25x0.25, 0.75x5.25); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 5 stock types (3/4 plywood, 1x1 square dowel, 1/4 plywood, 1/4 dowel, 1x6 solid); steps do not name stock per part"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "or the mitered legs. This will give the pocket screw enough material to grab onto for a strong hold.\nUse wood glue and 1.5\" pocket screws to put the mitered legs together.\nIt helps to use clamps here!",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Drill pocket holes in the top and bottom piece, making sure they face up.\nUse wood glue and 1.5\" pocket screws attach the back legs together.",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
+          "quote": "Use wood glue and 1.5\" pocket screws to put the mitered legs together."
         },
         {
           "path": "steps[7].body",
-          "quote": "he bottom.\nThis allows the pocket screws to have enough hold when they screw into the mitered legs.\nUse wood glue and 1.5\" pocket screws to screw the side pieces to the mitered legs and the back legs.",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
+          "quote": "Use wood glue and 1.5\" pocket screws to screw the side pieces to the mitered legs and the back legs."
         },
         {
-          "path": "steps[7].body",
-          "quote": "he bottom.\nThis allows the pocket screws to have enough hold when they screw into the mitered legs.\nUse wood glue and 1.5\" pocket screws to screw the side pieces to the mitered legs and the back legs.",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
+          "path": "steps[10].body",
+          "quote": "Use wood glue and 1.25\" pocket screws to put the drawer together."
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "1.25\" screws for drawer fronts"
         }
-      ]
+      ],
+      "reason": "Steps 4, 6, 7 use 1.5\" pocket screws; steps[10] uses 1.25\" pocket screws for the drawer boxes. Searched materials[].name for /screw/: only '1.25\" screws for drawer fronts' (qty 4, a different use, steps[12]). No 1.5\" pocket screws line and no screws for drawer-box assembly."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slide positions (offset .75\" from front, 1.75\" up, 2\" between), dowel holes (1.5\" from edges, 1\" deep), groove depth 1/4\", gaps 1/16-1/8\" are numeric; drawer-front grooves 'evenly space the 5', hardware 'favorite' are relational/as-desired. Figure-8 holes: see gaps.",
+      "search": "viewed steps[8] image: render only"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|see (the )?(diagram|drawing)|diagram|drawing|pictured|attached/i: no step refers to a drawing; sweep stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box, base frames, base joined, top fastened, drawers built, slides installed, fronts attached, back rabbet/back panel; each step uses parts made earlier and nothing is closed off before it must be reached."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Drill pocket holes on the top and bottom piece for the mitered legs."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Drill pocket holes in just the front and back pieces of the drawers."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1\" square legs and 3/4\" drawer pieces; searched all steps for /setting|jig|thickness/i: no jig thickness setting stated anywhere. Image of step 8 (viewed) is a render, shows no setting; other images not viewed."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Checked: box 23\" top x 16\" deep = base 14\" cross pieces + 2x1\" = 16\" and front/back frames 23\" wide (step 7 'flush on all sides'); drawer fronts 21.31 x 4.375 fit a 21.5 x 9 opening within the 1/16-1/8 gap; back panel 22 x 9.5 = opening + 2 x 1/4\" rabbet. Every made part is installed; steps end with hardware. Consumables: see gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "drill 2 holes on each side of the top of the base until the figure 8's sit flush inside.",
+      "what": "Positions of the figure-8 holes along each side are not given (no distance from corner/end, not shown in the viewed step image); a relational/free placement, noted not failed."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "wrap a piece of painters tape 1\" down on your drill bit",
+      "what": "Painter's tape used but not in materials (searched materials for /tape/: none)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[14].body",
+      "quote": "Sand, stain and install your favorite hardware",
+      "what": "Sandpaper and stain used in the last step but not in materials (searched materials for /sand|stain|finish/: none)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/201291c66770cb7a.webp"
+    ]
+  }
 }

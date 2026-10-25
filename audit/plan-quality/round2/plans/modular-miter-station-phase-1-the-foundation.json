@@ -224,13 +224,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; steps[7] 'Visit www.theAwesomeOrange.com' is a credit/photos link, not needed to build"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (4 leg frames = 8 legs + 8 leg rails, 3+3 stretchers, cross supports, middle rails and top support, tops, exterior and middle panels) all have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used: rows 0-1 steps[0], 2-3 steps[1], 5 steps[2] (viewed diagram shows 33\" supports), 4 and 6 steps[3], 7-8 steps[5], 9 steps[4], 10 steps[6]. Row 8 is labelled 'Right Side' but is the 60\" left-section top (see gaps)."
     },
     "R4": {
       "result": "pass",
@@ -238,27 +240,66 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "2x4 part (1.5 x 3.5 matches exactly 2x4): 8x41 + 8x29 + 3x56.75 + 3x26.75 + 4x30 + 5x33 + 1x27 = 1122.5 + kerf 18 x 1/8 = 1124.75 <= 14x96 = 1344, so passes (first-fit also packs into 13 boards). Sheet parts: 3/4 ply area 3x30x36 + 36x60 = 5400 sq in <= 2x4608; 1/4 ply 2x36x38.75 + 2x25.25x36 = 4608 sq in <= 2x4608, so no certain fail; per R5 sheets stay unknown."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "Attach tops to each section using 1/4\" wood screws.",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+          "quote": "Attach tops to each section using 1/4\" wood screws."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Box of 1 1/4\" Spax Wood Screws"
         }
-      ]
+      ],
+      "reason": "Step names 1/4\" wood screws; no 1/4\" screw is in materials (searched materials[].name for /screw/: 2 1/2\" pocket hole, 1 1/4\" Spax, 3\" Spax). Almost certainly a dropped '1 ' for the 1 1/4\" Spax screws, but as written the size does not match."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Bottom support about 7\" up (steps[0],[1]); middle section height = 'YOUR miter saw bed' with spacer blocks (relational); viewed steps[3] diagram gives 3 1/4\" bottom rail height, 30/27/33\" members; cross-support spacing is shown evenly spaced (relational).",
+      "search": "viewed steps[2] and steps[3] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands: no step text refers to a drawing; viewed images are dimensioned diagrams"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg frames, stretchers, cross supports, middle section hung at the builder's saw-bed height, panels, tops, middle panels; each step uses parts already made."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 1 1/2\" pocket holes with 2 1/2\" coarse screws; all pocket-holed parts are 2x4 (1.5\" thick); other joints name 3\" screws, brad nails."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Numbers add up: leg frame 29 + 2 x 3.5 = 36 wide x 41 high (steps[0]); cross supports 33 = 36 - 2 x 1.5; three 56 3/4\" and three 26 3/4\" stretchers match rows 2-3; 4 leg frames. Every part is installed; steps end with panels and tops."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[8].part",
+      "quote": "Top - Right Side 0.75 36 60",
+      "what": "Row is named 'Right Side' but is 36 x 60, matching the 56 3/4\" left section; row 7 ('Middle Top & Bottom & Right Side') carries the 30 x 36 pieces. Naming only; steps[5] says 'tops to each section'."
+    },
+    {
+      "path": "steps[5].body / steps[6].body",
+      "quote": "Using 5/8\"-3/4\" 18 ga brand nails attach middle section side panels.",
+      "what": "Typo 'brand' for brad; no consequence."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/43347aeeb96b5c1f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7dcfb21ef23c10c2.webp"
+    ]
+  }
 }

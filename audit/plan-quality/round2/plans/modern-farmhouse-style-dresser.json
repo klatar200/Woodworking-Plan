@@ -152,20 +152,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps make (side panels, legs, 1x2 side trim, bottom pieces, drawer boxes with 3/4 plywood bottom, plywood top, drawer faces, 1/4 plywood backing) all appear in cutList rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Bottom support",
-          "why": "no step mentions it (searched steps for support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag on 'Bottom support' rejected: steps[3] 'Attach bottom pieces to sides, use pocket hole jig set for 1-1/2\" thickness' uses the 1-1/2 thick 2x2 bottom supports; every other row is used by a step."
     },
     "R4": {
       "result": "pass",
@@ -173,21 +168,82 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (sheet-0.75, 2x2, 1x2, 1x6, 1x8, sheet-0.25); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 6 stock types (3/4 ply, 2x2, 1x2, 1x6, 1x8, 1/4 ply); steps do not name stock per part"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Once you have them in place using 1\" screws works best to attach the drawer front from the inside."
+        },
+        {
+          "path": "materials[12..15]",
+          "quote": "1-1/4\" pocket hole screws | 2-1/2\" pocket hole screws | 1\" Nails | Flat head screws 3/4\" long (if you use corner brackets)"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "use wood glue and 1-1/4\" pocket hole nails"
+        }
+      ],
+      "reason": "Step 7 uses 1\" screws; materials list no 1\" screws (searched materials[].name for /screw/ and /1\"/: only 1-1/4\" and 2-1/2\" pocket hole screws, 3/4\" flat head screws, 1\" Nails). Step 1 also calls for '1-1/4\" pocket hole nails' while materials only has pocket hole screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Drawer-slide heights are given in the viewed steps[2] image (4-3/4\", 12-1/8\", 19-1/2\", 26-7/8\"); drawer face gaps and drawer setback (3/4\") are numeric.",
+      "search": "viewed steps[2] image"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "steps[2] 'See image for measurements' has its own image, viewed: shows slide heights."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Slides installed on flat side panels (steps[2]) before bottom pieces/drawers; top, faces after drawers. No step blocks a later one."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "use pocket hole jig set for 1-1/2\" thickness with 2-1/2\" long pocket hole screws"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Add pocket holes to both of the side boards (inside), I recommend 6 pocket holes on the long side and 4 on the top."
+        }
+      ],
+      "reason": "Only a 1-1/2\" setting is stated (2x2 bottom supports). 3/4\" plywood sides, drawer boxes (steps[4]) and top (steps[6]) get pocket holes with no 3/4\" setting in text; step images for those not viewed."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Sizes match (31-1/4 panels, 33-1/2 legs, drawers 36-1/2 x 17-1/4, top 18-3/4 x 42, backing 42 x 31-3/4); 4 faces/4 drawers; every made part is installed; steps reach attached faces and veneer top edge. Pulls: see gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "use pocket holes, and glue or corner brackets as seen in the picture",
+      "what": "Corner brackets named as an alternative; not in materials (only 3/4\" flat head screws 'if you use corner brackets'). Optional alternative, so not R14(c)."
+    },
+    {
+      "path": "materials[7].name",
+      "quote": "Drawer pulls",
+      "what": "8 drawer pulls are in materials but no step installs them (searched steps for /pull|handle|knob/i: none)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/831e14eed9724471.webp"
+    ]
+  }
 }

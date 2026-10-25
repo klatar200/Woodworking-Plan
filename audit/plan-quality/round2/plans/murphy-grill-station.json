@@ -104,51 +104,168 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; the WallControl panel is a bought product, not a document dependency"
     },
     "R2": {
-      "result": "to-read"
-    },
-    "R3": {
-      "result": "to-read"
-    },
-    "R4": {
-      "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, sheet-0.75); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "Attach the panel using 5/8\" pan head screws.",
-          "why": "5/8\" screw — no material line lists a 5/8\" fastener"
+          "path": "steps[1].body",
+          "quote": "Do the same for the cleat and bottom support but make sure to add pocket holes to the top of the cleat as well."
         },
         {
-          "path": "steps[11].body",
-          "quote": " the Hinges to the Cabinet first. Then clamp the Big frame to the cabinet using 1/8\" spacers and screw in your hinges to the frame. This should give you equal spacing when you open and close the door.",
-          "why": "1/8\" screw — no material line lists a 1/8\" fastener"
+          "path": "steps[3].body",
+          "quote": "Secure the Top and cleat to the Sides with pocket screws. Attach the Bottom Stretcher to the Bottom and Sides as well."
         },
         {
           "path": "steps[12].body",
-          "quote": "Mount the Wall Cleat to your wall using a couple of 3\" screws. The cleat should be about 72\" off the ground so that the top will be about counter-height when open.",
-          "why": "3\" screw — no material line lists a 3\" fastener"
+          "quote": "Mount the Wall Cleat to your wall using a couple of 3\" screws."
         }
-      ]
+      ],
+      "reason": "The steps build a cabinet cleat, a bottom stretcher/support and a wall cleat that the cabinet hangs on (steps[12]-[13]). Searched cutList[].part and materials[].name for /cleat|stretcher|support/i: no match; cutList has only Sides, Top and Bottoms (2), table-top boards and frame parts, and no step gives a size or says to cut them from listed stock. Viewed steps[1] and steps[3] images show only flat pocket-holed pieces, no dimensions for these. The wall cleat is what carries the whole cabinet, so it is structural; likely rather than certain because a builder could make a cleat from the leftover plywood."
+    },
+    "R3": {
+      "result": "pass",
+      "reason": "All 7 rows used: Sides/Top and Bottoms steps[2]-[3], Table top boards steps[5], frames steps[6],[10],[15]."
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9); 0.75 x 5.5 table-top boards can only come from the 3/4 plywood (steps call them 1x6's, see gaps)"
+    },
+    "R5": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3..6]",
+          "quote": "Big Frame Stiles 2 x 32.25 | Big Frame Rails 2 x 13.25 | Small Frame Stiles 2 x 29 | Small Frame Rails 2 x 10 (all 1 1/2 x 1 1/2)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Select pine board, 2x2 96\" (quantity 1)"
+        }
+      ],
+      "arithmetic": "1.5 x 1.5 parts match exactly one listed material (2x2). 2 x 32.25 + 2 x 13.25 + 2 x 29 + 2 x 10 = 64.5 + 26.5 + 58 + 20 = 169 in; + kerf 7 x 1/8 (8 parts - 1 board) = 169.875 in; bought 1 x 96 = 96 in; 169.875 > 96 (short 73.9 in). importDiffs for this plan lists no defaulted quantity, so the 1 is not an import default. 3/4 plywood: 2x9x34 + 2x9x16.5 + 3x5.5x32.25 = 1441 sq in <= half sheet, not a fail.",
+      "reason": "One 8' 2x2 cannot supply the four frames."
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the panel using 5/8\" pan head screws."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "using a couple of 3\" screws"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Attach the Table top to the big frame using glue and brad nails."
+        },
+        {
+          "path": "materials[4..5]",
+          "quote": "2\" pocket screws | 1 1/4\" pocket screws"
+        }
+      ],
+      "reason": "Steps use 5/8\" pan head screws, 3\" screws and brad nails (steps[10],[15]). Searched materials[].name for /screw|nail|fastener/i: only 2\" and 1 1/4\" pocket screws. Sweep flag on steps[11] '1/8\" spacers' is a spacer, not a fastener."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Attach the Hinges to the Cabinet first. Then clamp the Big frame to the cabinet using 1/8\" spacers and screw in your hinges to the frame."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Secure the Top and cleat to the Sides with pocket screws."
+        }
+      ],
+      "reason": "No hinge position and no cleat position/size is given in text; viewed steps[1], [3], [11], [14] images are unlabelled drawings/photo with no dimensions (steps[11] shows the door only). Given: cleat 72\" off the ground (steps[12]), 1/8\" reveal and spacers. Sash lock 'top of the cabinet' is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands: no step refers to a diagram or drawing"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cabinet, panel, table top, frames, finish, assemble door, hinge, wall cleat, hang; each uses parts already made. Small frame is attached last (steps[15]) but can be done on the open door."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on each end of the top and bottom pieces."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood and 1 1/2\" 2x2 frames (steps[1]-[3], [6]); searched all steps and materials for /jig|setting|thickness/i: no setting stated. Viewed images (steps[1], [3]) are line drawings with no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[10].name",
+          "quote": "Decorative black chain"
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "You are now ready to enjoy your patio space with awesome grill tool storage! Just fold it open and its ready to go!"
+        }
+      ],
+      "reason": "The chain is bought (materials[10]) and the viewed steps[14] photo shows chains holding the folded-down table, but searched all steps for /chain/i: no step attaches it or says where. Without it the table has no stop when open (hinges only). Other numbers agree: small frame 13 x 29 in a 13.25 x 29.25 opening = 1/8\" each side (steps[15])."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Glue your 1x6's together to form your Table Top.",
+      "what": "Steps call the table top boards 1x6's but materials list no 1x6 (only 2x2 and 3/4 plywood); cutList[2] 0.75 x 5.5 x 32.25 x3 can only come from the plywood or an unlisted 1x6."
+    },
+    {
+      "path": "materials[2].name",
+      "quote": "WallControl Vertical Panel",
+      "what": "No size or location of the panel is given (steps[4] 'Attach the panel'), so whether it fits the 9 x 34 side cabinet is not checkable."
+    },
+    {
+      "path": "viewed steps[11] image",
+      "quote": "Attach the Hinges to the Cabinet first.",
+      "what": "Viewed door image shows a diagonal brace across the table-top boards; no step or cut-list row mentions a diagonal brace."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Glue your 1x6's together",
+      "what": "Wood glue used in steps[5],[10],[15] and 150 grit sandpaper in steps[7] are not in materials (searched /glue|sand/: none)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/995ee71483469913.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/941a33cbc8873246.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/38a3ccadebe3d96e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/206e37c4df899655.webp"
+    ]
+  }
 }

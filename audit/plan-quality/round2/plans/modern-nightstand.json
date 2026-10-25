@@ -56,25 +56,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " visible layers, attach the wood veneer using an iron (follow instructions on package). The wood veneer comes in 3/4\" width, so you will need to trim off the excess 1/4\" using the wood veneer trimmer.",
-          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": " visible layers, attach the wood veneer using an iron (follow instructions on package). The wood veneer comes in 3/4\" width, so you will need to trim off the excess 1/4\" using the wood veneer trimmer.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags rejected: steps[9] 3/4\" and 1/4\" are the veneer roll width and the strip trimmed off it (material, not a part). Parts made (sides, top, bottom, apron, drawer fronts/backs/sides/bottoms, faces) all have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: Sides/Top steps[0], Bottom steps[1], Apron steps[3], Drawer front/back/side steps[4], Drawer bottom steps[5], Drawer face steps[8]."
     },
     "R4": {
       "result": "pass",
@@ -82,21 +72,55 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 2×15×25 + 1×15×18 + 1×14.5×17 + 3×6×15 + 3×6×15 + 6×6×14 + 3×13×15 + 3×7.5×16.75 + 1×1.5×17 = 3297.9 sq in; bought 1×48×96 = 4608 sq in)"
+      "reason": "sheet layout not judged (area fits: part area 3297.9 sq in vs 4608 bought, so no certain fail)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners in steps: 2\" nails (materials[4]), 1\" pocket hole screws (materials[3]), 1\" nails (materials[5]), slide 'supplied screws'. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric: bottom 1\" up and 1/2\" inset, slides about 4\"/11\"/18\" down and 1/2\" from front, drawers 1/2\" in, apron flush with bottom; drawer-box slide position set by dry-fit; face gaps and pull position relational/as-desired."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "search": "sweep stands: 2 references, each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Slides go on the sides before the box is closed (steps[2] says why); apron, drawer boxes, slides on boxes, then faces; each step uses parts already made."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Drill 1/2\" pocket holes' and steps[4]/[5] '1/2\" pocket holes' state the setting; every pocket-holed part is 1/2\" plywood (cutList thicknessIn 0.5)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Overall 25.5 x 18 x 15 = sides 25 + top 0.5, top 18 wide, 15 deep; bottom 17 = 18 - 2x0.5; drawers 15 wide between 14\" sides = 16 + 2 x 1/2\" slides = 17 opening; nails 3 x 3 faces = 9 <= 10. Every part installed; steps end with finish and hardware; slides, pulls, veneer, filler, paint, glue all in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body / cutList[2]",
+      "quote": "Drill 1/2\" pocket holes on both of the 15\" sides of the bottom board.",
+      "what": "Step names 15\" sides but the Kreg-corrected Bottom row is 1/2\" x 14 1/2\" x 17\" (no 15\" side; 14 1/2\" = 15\" depth less the 1/2\" inset). Intent is clear; minor wording mismatch."
+    },
+    {
+      "path": "steps[2].body / cutList[7]",
+      "quote": "about 4\" down from the top, 11\" down from the top, and 18\" down from the top",
+      "what": "Slide pitch is 7\" while the drawer faces are 7 1/2\" tall (corrected row 16 3/4\" x 7 1/2\"); the 6\"-tall boxes at 7\" pitch carry 7 1/2\" faces whose gaps only work if each face sits at a different offset on its box (arithmetic: gap = o_upper - o_lower - 1/2\", needs offsets 1 1/2\", 3/4\", 0 for zero slack). Not settled from the plan text; flagged for human eyes."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "either stain or paint the drawer faces",
+      "what": "Stain alternative not in materials (searched materials for /stain/: none); paint is listed. Optional alternative."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": []
+  }
 }

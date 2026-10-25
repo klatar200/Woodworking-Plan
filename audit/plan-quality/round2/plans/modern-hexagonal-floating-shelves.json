@@ -7,20 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; steps[9] 'www.tristartables.com' is a credit, not needed to build"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " prefer.\nTo compensate for the angle required to make the hexagon, add 3\" to the size shelf you desire. For example, on my shelves, I wanted 7\" for the interior, so I cut the boards into 10\" sections.",
-          "why": "cut sentence states 7\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: steps[0] '7\" for the interior ... cut the boards into 10\" sections' is the worked example, and 7 + 3 = 10 matches cutList[0] length 10. The only part made (hexagon side pieces) is cutList[0]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0] 'Sides' (12) is the only row and every step cuts/assembles it."
     },
     "R4": {
       "result": "pass",
@@ -31,18 +26,41 @@
       "arithmetic": "parts: 12×10 + kerf 10 cuts (12 parts − 2 boards, the fewest possible)×1/8 = 121.250″; bought: 2×96 = 192″; 121.250 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener sizes given in any step (searched steps for /screw|nail|inch fastener sizes/: none; hanging hardware left to builder, see gaps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "sweep stands; hanging position/method is 'Find which way works for you' (as-desired), final length marked per builder's chosen interior length via stated formula (interior + 3\")"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "steps[6] 'as shown in the picture' has its own step image (not opened; own-image satisfies R11)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order is rough cut, set saw, first angle, mark length, final cut, sand, tape/glue assembly, finish, hang; each step uses only parts made earlier."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joints are built (pocket holes only named as one way to hang, steps[8]); the assembled joint method is stated: steps[6] glue on the end-grain joint with painter's tape holding the shape."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "7\" interior + 3\" = 10\" matches cutList[0]; steps cut, sand, assemble, finish and hang. Painter's tape, glue, stain, polyurethane are in materials. Hanging hardware: see gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "There are many ways to hang your shelves...brackets, anchors, even pocket-holes. Find which way works for you",
+      "what": "Hanging method and hardware are left entirely to the builder; no hardware is in materials and no position/method is given. Non-structural to the shelf itself."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": []
+  }
 }

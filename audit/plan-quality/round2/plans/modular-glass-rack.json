@@ -68,42 +68,102 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (25 1/2\" sides, 24\" 1x6 boards for frame/shelves/rack, 25 1/2\" 1x2 front rails, 24\" back support, cut-out board) all have cutList rows by name; the back support size conflict is scored under R14."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Sides",
-          "why": "no step mentions it (searched steps for sid)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: cutList[1] 'Sides' = the 25 1/2\" 1x6 boards of steps[0] ('Join both 25 1/2\" and 24\" 1x6\" boards ... 25 1/2\" square'); every other row is used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x2, 1x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0,1,3]",
+          "quote": "Shelves 5 x 24 | Sides 2 x 25 1/2 | Back Support 1 x 24 (all 3/4 x 5 1/2 / 1x6)"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x6 96\" (quantity 2)"
+        }
+      ],
+      "arithmetic": "Each part matches exactly one board (0.75 x 5.5 = 1x6; 0.75 x 1.5 = 1x2). 1x6 parts: 5 x 24 + 2 x 25.5 + 1 x 24 = 120 + 51 + 24 = 195 in; bought 2 x 96 = 192 in; 195 > 192 (short 3 in with zero kerf, so not kerf-only). 1x2: 2 x 25.5 = 51 <= 96. Same root cause as the R14 back-support conflict (if that part is a 1x2, 1x6 total is 171 and fits).",
+      "reason": "Cut list as written needs more 1x6 than is listed."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is 2\" 16 gauge finish nails (steps[0]-[3]; materials[2]); mounting brackets are in materials[4]. Wall fasteners not specified anywhere (no size claimed in steps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf heights 3\"/12\"/18\" from top are in steps[1] text and the viewed steps[1] image; slot width 1\", depth 3\", first slot 2 7/16\" and spacing 4 13/16\" are on the viewed steps[4] diagram. Hanging hardware position is as-desired.",
+      "search": "viewed steps[1] and steps[4] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "steps[4] 'dimensions on the diagram' has its own image; viewed: shows slot positions 2 7/16\", 4 13/16\", 1\" wide, 3\" deep."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, shelves at set heights, rails, back support, then slots cut with a jigsaw from the open front edge of the installed rack board; possible though awkward (see gaps)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joints; every joint states glue plus 2\" 16 gauge finish nails."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the remaining 24\" 1x2\"board using wood glue and 2 inch 16 gauge finishing nails."
+        },
+        {
+          "path": "cutList[3] (importDiffs source)",
+          "quote": "Back Support 3/4\" x 5 1/2\"x 24\""
+        }
+      ],
+      "arithmetic": "Step names the back support a 24\" 1x2 (3/4 x 1 1/2); Kreg cut row is 3/4 x 5 1/2 x 24 (a 1x6). Cannot both be right.",
+      "reason": "Size/stock of the back support differs between the step and the cut-list row. Other numbers add up: 24 + 2 x 3/4 = 25 1/2\" square; 5 frame/shelf boards of 24\" = 2 + 3 shelves."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Use a jigsaw to cut out 1' wide and 3\" deep cut outs.",
+      "what": "Step says 1' wide; the viewed diagram shows 1\" wide slots (5 slots). Typo; diagram is correct."
+    },
+    {
+      "path": "cutList[1] (importDiffs source)",
+      "quote": "3/4\" x 5 12\"x 25 1/2\"",
+      "what": "Sides source reads '5 12\"' (typo for 5 1/2\"); corrected row width 5 vs shelves 5.5. Intent clear from the 1x6 stock."
+    },
+    {
+      "path": "steps[1].body / steps[4].body",
+      "quote": "Place cut out 1\"x 6\"x 24\" so that the base of the board is 3\" from the top of the unit.",
+      "what": "Slots are cut in step 4 after the board is already glued and nailed into the frame (step 1); possible but not stated that it can be done first."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b0fe139628d924ac.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/699cf09ee1b45f7a.webp"
+    ]
+  }
 }

@@ -80,41 +80,74 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (25 1/2\" sides, 24\" 1x6 boards, 25 1/2\" 1x2 front rails, 24\" 1x2 back support) are cutList[0]-[3]."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: 'Shelves' (3 x 24\" 1x6) are the two 24\" boards of the frame plus the 'remaining 24\" 1x6 board' inserted 12\" from the top in steps[0]; all other rows used in steps[1]-[2]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "Each part matches exactly one board (0.75 x 5.5 = 1x6, 0.75 x 1.5 = 1x2). 1x6: 2 x 25.5 + 3 x 24 = 51 + 72 = 123 + kerf 3 x 1/8 = 123.375 <= 2 x 96 = 192. 1x2: 5 x 25.5 + 24 = 151.5 + kerf 4 x 1/8 = 152 <= 2 x 96 = 192. importDiffs has no defaulted quantity (only fraction-dropped)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is 2\" 16 gauge finish nails (steps[0]-[2]; materials[4]); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Middle shelf 12\" from the top is in steps[0]; the five front rail positions are dimensioned in the viewed steps[1] image (labels 5\", 7\", 12\"); hanging hardware position is as-desired.",
+      "search": "viewed steps[1] image"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands: no step text refers to a drawing; steps[1] has its own dimensioned image (viewed)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame and middle shelf, front rails, back support, finish; each step uses parts already made."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joints; every joint states glue and 2\" 16 gauge finishing nails."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "24 + 2 x 3/4 = 25 1/2\" square (steps[0]); 3 shelves = 2 frame boards + 1 inserted; 5 front rails shown in the viewed image match cutList[2] qty 5; every part installed and steps end with filler, sand, stain."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body vs viewed steps[1] image",
+      "quote": "Attach the 25 1/2\" 1x2\" board(s) to the face of the unit",
+      "what": "The viewed diagram labels all five rails 24 1/2\", while text and cutList[2] give 25 1/2\" (= the 25 1/2\" unit width); text and cut list agree, so noted only. Step text also does not state there are 5 rails ('board(s)')."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Sand smooth, then apply desire stain and/or paint.",
+      "what": "Sandpaper used but not in materials (searched materials for /sand/: none); stain, filler and glue are listed."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "or you can attach hanging hardware to the back",
+      "what": "Optional hanging hardware not in materials; no position given."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cdba6bf6916a57af.webp"
+    ]
+  }
 }

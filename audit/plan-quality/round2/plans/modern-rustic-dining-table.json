@@ -400,43 +400,91 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make (leg frames, spans, mid-supports, 32 leg faces, leg ends, top frame members, table top boards, frame edges) has a cutList row; 'FRAME ENDS' in steps[1] = Leg Ends."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used: rows 0-4 steps[0]-[1], rows 5-9 steps[2]-[4], row 10 steps[5], rows 11-12 steps[7]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[4] thinner than stock — would need planing/resawing, not judged; +8 more"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0] (importDiffs source)",
+          "quote": "1 1 /2\" x 2 1/2\" x 29 1/4\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "These 2 1/2\" boards should fit evenly across the span (edge to edge). In total, you will use 32 boards on this step."
+        }
+      ],
+      "arithmetic": "Kreg-corrected row cutList[0] = 1 x 2.5 x 29.25 (thickness 1, from the garbled source '1 1 /2\"'); no listed board is 1\" thick x 2.5\" (1x3 = 3/4 x 2 1/2, 2x3 = 1 1/2 x 2 1/2). The intended size is 1 1/2\" (same legs as cutList[1] 1.5 x 2.5 and span 17 + 2 x t = 8 x 2.5 = 20 gives t = 1.5), so the plan text is a typo, not a design error. Other rows match: 1.5x2.5 = 2x3, 0.75x2.5 = 1x3, 0.75x5.25 <= 1x6 (ripped to 4), 1.5x1.5 = 2x2, 0.75x3.5 = 1x4.",
+      "reason": "Source dimension string has a stray '1 ' so the row shows thickness 1; fix is a one-character data correction."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x3, 2x3, 1x6, 2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "Each part matches exactly one listed board. 1x3 8': 32x29.25 + 2x35 + 2x72 = 1150 + kerf 36 x 1/8 = 1154.5 <= 14x96 = 1344 (first-fit packs into exactly 14 boards). 2x3 8': 4x29.25 + 4x17 + 2x26.25 = 237.5 (+kerf 238.75) <= 3x96 = 288 (3 boards). 1x6 8': 4x29.25 = 117 <= 2x96 = 192. 2x2 8': 2x70.5 + 6x32 + 2x45 + 3x17.5 + 6x5.75 = 510 (+kerf 512.4) <= 6x96 = 576 (6 boards). 1x4 6': 10x70.5 = 705 <= 10x72 = 720. Lengths written with ' in each material name; no board quantity is an import default (defaulted lines are materials[5..12], fasteners/finish)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" pocket hole screws (materials[5]), 1 1/4\" brad nails (materials[7]) and 1 5/8\" construction screws (materials[8]) cover steps[0]-[7]. 1 1/4\" pocket hole screws appear only in the optional second tabletop method of steps[5] (see gaps)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "e 17 1/2\" and 5 3/4\" TOP FRAME ADDITIONAL SUPPORTS as shown. The placement does not have to be exact, just spread apart and staggered as shown in the diagram.\nAttach with wood glue and 2 1/2\" pocket h",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0568e27efb28aeef.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed steps[4] diagram gives member positions (32\" sides/mids, 4\" leg gap, 5 3/4\" and 17 1/2\" supports: 5.75 + 1.5 + 17.5 + 1.5 + 5.75 = 32); step text says additional-support placement need not be exact; viewed steps[6] diagram gives leg inset 5.25\" and 'center left to right' is relational.",
+      "search": "flagged candidate steps[4] resolved by viewing its image"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "search": "sweep stands (8 references each with own image); viewed steps[4], [6] images are dimensioned diagrams"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg frames, facing, ends, top frame, table top on the clamped boards, legs inserted into the 4\" space, then edges; each uses parts already made and the underside stays reachable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes on each end of the LEG FRAME SPANS (4 pieces) and LEG FRAME MID-SUPPORTS."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes on either end of TWO of the TOP FRAME SIDES/MIDS."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1 1/2\" thick 2x3 and 2x2 parts; searched all steps and materials for /jig|setting|thickness/i: no setting stated. Viewed diagrams (steps[4], [6]) show hole positions but no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Numbers add up: legs 17 span + 2 x 1.5 = 20 = 8 x 2.5; depth 2.5 + 2 x 0.75 = 4.0; 32 faces = 4 sides x 8; top 10 x 3.5 = 35 = 32 + 2 x 1.5; edges 72 = 70.5 + 2 x 0.75, 35 side edges. Every made part is installed; steps end with sanding, filler, stain and varnish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "The second method (not shown) is to attach all of the tabletop boards together using pocket holes and 1 1/4\" pocket hole screws.",
+      "what": "1 1/4\" pocket hole screws are used only in this optional alternative method and are not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0568e27efb28aeef.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/da2115bea1f0ed49.webp"
+    ]
+  }
 }

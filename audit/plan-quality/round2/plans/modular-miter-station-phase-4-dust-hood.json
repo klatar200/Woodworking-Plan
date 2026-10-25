@@ -56,13 +56,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; steps[8] 'Visit www.theAwesomeOrange.com' is a credit, not needed to build"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (sides, top, back with notches, angled 1/4\" back, front trim, plastic) are in cutList or materials; 'cut back piece' in steps[1] is cutList[1] 'Top & Back'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: Sides steps[2], Top & Back steps[3]-[4], Angle Back Piece steps[5], Front Trim steps[7]."
     },
     "R4": {
       "result": "pass",
@@ -70,29 +72,72 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheet parts only: 3/4 ply area 2x17.5x20 + 2x16x42 + 0.75-wide trim = about 2044 sq in <= 4608; 1/4 ply part 7.5 x 43.5 = 326.25 sq in = the scrap listed (43 1/2 x 7.5), so not exceeded. Per R5 sheets stay unknown."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" coarse pocket hole screws (materials[2]) and 18 ga brad nails (materials[3]) cover the sized fasteners in steps[3]-[6]; steps[7] trim 'screws' name no size. Staples are scored under R14(c)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " to fit down in the middle section of the miter saw station. Depth will depend on the height of your miter saw table. In my case it was 4\". Also, I allowed for more room on the left side (8\") versus t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc9091ac321b6b12.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[1] resolved by viewed diagram: back notch 4\" deep, 8\" left, 30\" middle, 4\" right, 16\" x 42\"; viewed steps[2] diagram gives 16\" top, 12\" back edge. Notch depth/hood offset depend on the builder's saw (relational, stated). Slit width/spacing of the plastic is 'as needed'.",
+      "search": "viewed steps[1], steps[2] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "sweep stands: 1 reference in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Dimensions check, notch the back, cut the side slants, assemble top/back to sides, angled back with caulk from inside, mount, then plastic and trim from the open front."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3],[4],[6] state 3/4\" pocket holes with 1 1/4\" coarse screws; all pocket-holed parts are 3/4\" plywood."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Attach heavy mil plastic (I used a dust collector bag) to the front of the hood using staples."
+        },
+        {
+          "path": "materials[0..5]",
+          "quote": "Plywood 3/4\" | Plywood 1/4\" Scrap | Box of 1 1/4\" coarse pocket holes screws | 18 ga brad nails | Dust Collector Bag or Heavy Plastic | Tube of painter's caulk"
+        },
+        {
+          "path": "cutList[0] vs viewed steps[2] image",
+          "quote": "Sides 0.75 x 17.5 x 20 (source 3/4\" x 17 1/2\" x 20\"); diagram labels the side 18\" tall x 20\" wide"
+        }
+      ],
+      "arithmetic": "(c) Staples are used in steps[7]; searched materials[].name for /staple/: none, so a non-fastener-list hardware item is missing (R14(c)). (a) Viewed steps[2] diagram: side is 20\" wide x 18\" tall with a 16\" top and 12\" back edge (cut-away triangle 4\" x 6\" = 7.2\" slope, which the 7.5\" angle back covers); Kreg cut row gives the other dimension as 17.5\", 1/2\" less than the diagram's 18\".",
+      "reason": "Staples missing from materials (certain); sides row 17.5\" vs diagram 18\" (likely, from a viewed image)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Then screw trim piece on to cover plastic edge.",
+      "what": "Trim screws have no size and are not in materials (only pocket hole screws listed); wood screws general consumable-type item."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "I did a double layer of plastic",
+      "what": "Plastic is in materials[4] but no quantity guidance for double layer; no consumables missing otherwise (caulk listed)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc9091ac321b6b12.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/07b33028b2e14479.webp"
+    ]
+  }
 }

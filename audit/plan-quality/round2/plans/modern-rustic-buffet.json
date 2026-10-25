@@ -164,13 +164,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; steps[7] 'www.MyLove2Create.com' is a credit for more photos, not needed to build"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts made by steps (top/bottom, sides, dividers, middle and side shelves, back, door boards 1x4/1x6, trim, securing strips, feet) all appear in cutList or materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used; cutList[7] paint-stick/scrap-1/4 plywood strips are the securing pieces of steps[4] (viewed door diagram shows two strips across the boards)."
     },
     "R4": {
       "result": "pass",
@@ -178,42 +180,85 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x6, 1x4, 0.25x36, sheet-0.25); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 5 stock types; 3/4 x 3.5 and 3/4 x 5.5 door pieces could come from the 3/4 plywood sheet or the 1x4/1x6, and steps do not name stock per part"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Attach the sides flush to each end of the bottom piece. Then attach the middle sections as directed. Next, attach the top piece. Use 3/4'' pocket holes and 1 1/4'' pocket hole screws for all joinery.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "t then attach with 3/4'' pocket holes and 1 1/4'' pocket hole screws from the underside. You can fix the side shelves to any height you desire by attaching with pocket holes, or you can use a Kreg she",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Use 3/4'' pocket holes and 1 1/4'' pocket hole screws for all joinery."
         },
         {
           "path": "steps[3].body",
-          "quote": "Attach the 1/4'' plywood back to the frame with 3/4'' screws, making sure to attach into each side, divider, shelf, and both top and bottom pieces. Always pre-drill holes first.",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "quote": "Attach the 1/4'' plywood back to the frame with 3/4'' screws"
         },
         {
           "path": "steps[4].body",
-          "quote": " with a paint stick or scrap 1/4'' material with 3/4'' finish nails and glue. *Please note not all boards dimensions are accurate. After I built my doors I realized my 1x4 pieces were just short of th",
-          "why": "3/4\" nail — no material line lists a 3/4\" fastener"
+          "quote": "with 3/4'' finish nails and glue"
+        },
+        {
+          "path": "materials[5..10]",
+          "quote": "5mm shelf pins | Knobs | Small butt hinges | Magnetic cabinet door catches | Leg mounting hardware | modern legs"
         }
-      ]
+      ],
+      "reason": "Steps use 1 1/4\" pocket hole screws, 3/4\" screws and 3/4\" finish nails. Searched materials[].name for /screw|nail|fastener/i: no match (the only hardware lines are shelf pins, knobs, hinges, catches, leg mounting hardware, legs)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the doors with butt hinges, apply the magnetic catch, and knob as well."
+        }
+      ],
+      "reason": "No hinge position (distance from door top/bottom), catch or knob position is given in text or in the viewed steps[6] image (it states only '1/8\" space on all sides' and 18 x 23 1/2 / 17 3/4 x 23 1/4). Searched steps and notes for hinge/knob/catch locations: none. All other positions are given: viewed diagrams give section widths 18/17/18, middle shelves 7\"/7 1/2\"/7 1/2\", side shelf inset 1 3/4\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands; viewed images are dimensioned diagrams"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, shelves from the open front, back, doors built to the measured opening, finish, feet and doors; the viewed diagrams give pocket-hole access from underside/front."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and viewed steps[0]/[1] diagrams state 3/4'' pocket holes with 1 1/4'' screws; every pocket-holed part is 3/4\" plywood."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Frame: 3 x 18+17+18 + 4 x 3/4\" = 56, height 23 1/2\"+2 x 3/4\" gives back 25 x 56; door from cut list 5 x 3.5 + 5.5 + 0.25 (trim, viewed door diagram) = 23.25 = 23 1/4\" and width 17 3/4\" = 18 - 1/4\"; hinges 4 = 2 doors x 2. All parts installed; steps end with feet, doors, hardware."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Cut prices to length and glue together.",
+      "what": "Wood glue used in steps[0]/[4] but not in materials (searched materials for /glue/: none); paint/stain/finish and sandpaper also absent."
+    },
+    {
+      "path": "cutList[6]",
+      "quote": "Door part 0.25 0.75 17",
+      "what": "Corrected row is 1/4\" x 3/4\" x 17 3/4\"; the viewed door diagram shows this trim as 3/4\" thick x 1/4\" tall on the door bottom. Thickness/width order is ambiguous in the row, intent clear from the diagram."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f63df09eb7b251d0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/70ca638c27d419fb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f2d5a08f984126c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/634b4dabc0e4a077.webp"
+    ]
+  }
 }

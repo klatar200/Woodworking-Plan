@@ -44,42 +44,61 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; steps[7] 'tutorial in extras tab' points to a separate Christmas village project, not needed to build the shelf"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (main shelf ledge, 1x2 back ledge, two shelf sides) match cutList[0]-[2]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used in steps[1]-[4]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "Both listed boards match exactly one part width (0.75 x 7.25 = 1x8, 0.75 x 1.5 = 1x2). 1x8 96\": 44 + 2 x 8 = 60 + kerf 2 x 1/8 = 60.25 <= 96. 1x2 48\": 44 <= 48. importDiffs has no defaulted quantity."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws (materials[3]) and 2 1/2\" wood screws (materials[2]) cover steps[3],[4],[6]."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "will need to screw it into the studs through the back ledge. First, though, you will need to measure and mark your studs. Using a stud finder can save you from accidentally drilling a million holes in",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/58785b15cb1f1c8f.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[5] stud marking: stud positions are fixed by the wall (relational); back ledge flush to bottom with 3/4\" above, holes about 6\" apart, 'at least two' studs given. Shelf height on the wall is as-desired.",
+      "search": "image not opened: placement is relational"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands: 'like shown' references are in steps with their own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill holes in the main ledge, attach back ledge, attach sides, mark studs, hang."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] and steps[2] state 3/4\" pocket holes; all pocket-holed parts are 3/4\" boards."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Back ledge 1x2 (1.5\" wide) = 3/4\" shelf + 3/4\" sticking up as steps[3] says; sides 8\" x 7 1/4\" fit the ledge ends; all parts installed and the shelf is hung."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Using 2 1/2\" screws, screw through the back ledge and into the wall studs in at least two places.",
+      "what": "No wall-hanging height is given (as-desired); materials list 3 screws for hanging, consistent with 'at least two'."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": []
+  }
 }

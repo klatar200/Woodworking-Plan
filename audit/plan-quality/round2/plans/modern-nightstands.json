@@ -7,49 +7,84 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make (legs, side/front/back spans, lower sides, shelf/tops, drawer box front/backs and sides, drawer bottoms, drawer fronts, backs) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: spans in steps[1],[3] (viewed diagram shows 3 spans per side frame = 6 side + 6 front/back per nightstand, x2 = 12 each), Lower sides steps[2], Shelf/tops steps[4], Backs steps[5], drawer rows steps[6]-[8]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "readerNote": "Sweep returned unknown for cutList[0..2] 'thinner than stock'; those rows are 1.5 x 1.5, which is exactly the §9 actual size of materials[0] 2x2 (1 1/2 x 1 1/2). 0.75 parts match the 3/4\" sheet, 0.25 parts the 1/4\" sheet; all sheet parts fit 48x96.",
+      "basis": "Kreg-corrected cut rows vs materials (§9)"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "2x2 (exactly one material at 1.5x1.5): lengths 8x27 + 12x13.5 + 12x20 = 618 + kerf 32x1/8 = 622 <= 7x96 = 672, and first-fit packs into 7 boards, so passes. Sheet parts (3/4 and 1/4) total less area than bought (about 2937 vs 4608 and 931 vs 1152 sq in), so per R5 the sheets stay unknown."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2-1/2\" pocket-hole screws (materials[4]), 1-1/4\" pocket-hole screws (materials[5]) and 1-1/4\" brad nails (materials[6]) cover every size in the steps; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "at they sit back 1.25” from the face edge of the nightstand. This will give a recessed inset panel look to the drawer. Drill two holes in the front of the drawer box about 6” from each side, centered ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7d68c18efb891df6.webp"
+          "quote": "Install the drawer slides so that they sit back 1.25” from the face edge of the nightstand."
         },
         {
-          "path": "steps[8].body",
-          "quote": "ea to have some double-sided tape and playing cards on hand. You can space the drawer appropriately in the opening using the playing cards, and the double-sided tape will hold it in place until your r",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb679f76c0ea9309.webp"
+          "path": "steps[7].body",
+          "quote": "Drill two holes in the front of the drawer box about 6” from each side, centered top to bottom."
         }
-      ]
+      ],
+      "reason": "Only the setback of the slides is given. The vertical position of the slides in the 10.5\" opening (the 7.5\" box sits inside a 10.25\" face and 10.5\" opening) is not stated in text; viewed steps[7] image shows only setback and face size 19.75 x 10.25, no slide height. Searched steps and cutList notes for slide height/offset: none. Span heights (4\"/10.5\"/8\"), back position and face recess ARE given (viewed steps[1], [5], [7] images)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "9 reference(s), each in a step with its own image"
+      "search": "sweep stands (9 references each with own image); viewed steps[1], [5], [7] images are dimensioned diagrams"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, lower side inserts, front/back spans, shelf/tops, back, drawer boxes, slides, face; slides can still be reached from the open front after the back is on."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1],[3] state 1-1/2\" jig setting for 2x2 spans; steps[2],[4] state 3/4\" setting for the plywood; drawer box 3/4\" parts (steps[6]) are covered by the 3/4\" setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Drawer box 17.5 + 2 x 3/4 = 19 wide, + 2 x 0.5 slide clearance = 20 opening = 20 front/back span length; face 19.75 x 10.25 in 20 x 10.5 opening; frame 4 + 1.5 + 10.5 + 1.5 + 8 + 1.5 = 27 = leg length. Every part installed; steps reach finishing."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7]/materials",
+      "quote": "Install the drawer slides so that they sit back 1.25”",
+      "what": "Viewed steps[7] image shows a drawer pull on the face, but no pull/handle is in materials and no step installs one (searched steps and materials for /pull|handle|knob/i: none). Hardware shown only in the image; no position given."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "it is a great idea to have some double-sided tape and playing cards on hand",
+      "what": "Double-sided tape used to hold the drawer face but not in materials (searched materials for /tape/: none)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32237ec81219bac5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7d68c18efb891df6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0b7f3b19f9e62a90.webp"
+    ]
+  }
 }

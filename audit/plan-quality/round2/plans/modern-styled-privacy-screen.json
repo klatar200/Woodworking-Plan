@@ -7,51 +7,123 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|purchase/i; sweep stands"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (60\" verticals, 17\" and 36\" horizontals, 1x4 and 1x6 slats, hinges) are in cutList/materials; three frames = 6 verticals + 4 x 17 + 2 x 36."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used by steps[1]-[6]; rows 3-4 are duplicates in size/name but both are slats nailed in steps[6] (mismatch recorded under R14)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "nominalRows": [
-        "cutList[0]",
-        "cutList[1]",
-        "cutList[2]",
-        "cutList[3]",
-        "cutList[4]",
-        "cutList[5]",
-        "cutList[6]"
-      ]
+      "basis": "Kreg-corrected cut rows vs board materials (§9); 2x4 rows are nominal, same as 1x4/1x6 rows"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 1x6, 1x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3]",
+          "quote": "Privacy Slats (for small frames) 1 4 24 (quantity 10)"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Privacy Slats (for large frame) 1 4 43 (quantity 5)"
+        },
+        {
+          "path": "materials[2]",
+          "quote": "Board, 1x4 96\" (quantity 4)"
+        }
+      ],
+      "arithmetic": "Each part width matches exactly one listed board (1x4 = 3/4 x 3 1/2). 1x4 parts, counting only rows 3 and 5: 10 x 24 + 5 x 43 = 240 + 215 = 455 in; bought 4 x 96 = 384 in; 455 > 384 (short 71 in before kerf). As written, row 4 (also 1x4, 10 x 24 = 240) makes it 695 in. 2x4: 6x60 + 4x17 + 2x36 = 500 <= 6x96 = 576 fine; 1x6 parts (row 6 only) 5 x 43 = 215 <= 576.",
+      "reason": "1x4 stock bought is far below the 1x4 slat length in the cut list; no quantity involved is an import default (importDiffs empty)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": " Start with the smaller 1\"x4\" slat, flush with the top, and nail it to the frame. Measure one inch between slats. You will end with a 1\"x6\" slat flush with the bottom 2\"x4\" of the frame. The feet will",
-          "why": "4\" nail — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: the '4\"' it matched is the 1\"x4\" slat size in steps[6]. Fasteners: 2\" Kreg screws (materials[3]), 2\" finishing nails (materials[4]), hinges (materials[8]); no conflicts."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "connect the three frames to each other with hinges that open to the front."
+        }
+      ],
+      "reason": "4 hinges (materials[8]) but no hinge height/position or mortise detail is given in text; viewed steps[7] image is a close-up of one hinge with no dimensions. Searched steps for hinge location: none. Other positions are numeric: feet indent 6 1/4\", slat gap 1\", slats start flush with top."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "sweep stands: 1 reference (steps[1] 'as shown') in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut/sand, frame layout, pocket holes, assemble frames, stain, slats nailed on the flat frames, then hinge the three frames; each step uses parts already made."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill two pocket holes into either side of the 17\" and 36\" horizontal boards that make up the frame."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" 2x4s; searched all steps/materials for /jig|setting|thickness/i: no setting stated; viewed steps[2] image shows a jig on a board but no readable setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Start at the top of the frame and attach the privacy slats, alternating between 1\"x4\" and 1\"x6\" slats."
+        },
+        {
+          "path": "cutList[3..4]",
+          "quote": "Privacy Slats (for small frames) 1 4 24 (10); Privacy Slats (for small frame) 1 4 24 (10)"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Privacy Slats (for large frame) 1 6 43 (quantity 5)"
+        }
+      ],
+      "arithmetic": "Steps alternate 1x4 and 1x6 on every frame (5 pairs per 60\" frame: 5 x 3.5 + 5 x 5.5 + 9 x 1 = 54), so each small frame needs 5 1x4 and 5 1x6 slats; cutList[3] and [4] are both 1x4 x 24 (10 + 10) and there is no 1x6 x 24 row.",
+      "reason": "Cut list has no 1x6 slats for the two small frames; cutList[4] reads as a duplicate of [3] with the 1x6 width lost. Likely rather than certain because the source row was not seen."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[3] / cutList[0]",
+      "quote": "Privacy Slats (for small frames) 1 4 24",
+      "what": "Slats 24\" long on frames 20\" wide (17 + 2 x 1 1/2) and 43\" on a 39\" frame overhang each side by 2\"; not explained and affects how hinged frames meet. Left as unclear, not scored."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Stain and seal the frame",
+      "what": "No sandpaper in materials (steps[0] sands all pieces); stain, sealer and glue are listed."
+    }
+  ],
+  "reader": {
+    "batch": "r2-21",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eba4960b6059302b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/36b7e5624b1af253.webp"
+    ]
+  }
 }
